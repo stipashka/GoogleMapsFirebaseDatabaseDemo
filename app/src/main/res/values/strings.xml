@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GoogleMapsFirebaseDatabaseDemo</string>
+
+    <string name="facebook_app_id">2092700874345966</string>
+    <string name="fb_login_protocol_scheme">fb2092700874345966</string>
+
+    <string name="title_activity_maps">Map</string>
+    <string name="enter_your_name_dialog">Enter your name...</string>
+    <string name="enter_your_name">Enter your name...</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="enter_the_photos_description">Enter the photos\' description...</string>
+</resources>

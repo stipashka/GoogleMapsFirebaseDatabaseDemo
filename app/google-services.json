@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "409375157615",
+    "firebase_url": "https://mapsfirebasedatabasedemo.firebaseio.com",
+    "project_id": "mapsfirebasedatabasedemo",
+    "storage_bucket": "mapsfirebasedatabasedemo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409375157615:android:f48d610d6268a0e0",
+        "android_client_info": {
+          "package_name": "hub.korostenskyi.googlemapsfirebasedatabasedemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409375157615-b22i35bad835ca89nd05ldc6ujrqio8i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hub.korostenskyi.googlemapsfirebasedatabasedemo",
+            "certificate_hash": "9cfc67c3089be90f020ac6048489787fb2599713"
+          }
+        },
+        {
+          "client_id": "409375157615-9g8jif1se48u0v1plnukbjaovjco6ral.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbjc6_vQHbkE_gDWzHosZvAxIYPHhvBEU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409375157615-9g8jif1se48u0v1plnukbjaovjco6ral.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
