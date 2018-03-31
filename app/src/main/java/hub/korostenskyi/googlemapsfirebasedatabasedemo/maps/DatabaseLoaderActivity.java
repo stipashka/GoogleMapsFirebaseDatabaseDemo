@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -71,9 +70,11 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                 String name = name_editText.getText().toString();
                 String photoName = photoName_editText.getText().toString();
                 String desc = desc_editText.getText().toString();
-
                 String date = date_editText.getText().toString();
-                if (selectedImage == null) {
+
+                if (name.equals("") || photoName.equals("") || desc.equals("") || date.equals("")){
+                    Toast.makeText(DatabaseLoaderActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
+                } else if (selectedImage == null) {
                     Toast.makeText(DatabaseLoaderActivity.this, "Select an image!", Toast.LENGTH_LONG).show();
                 } else {
                     StorageReference imgRef = storageReference.child(photoName.toLowerCase() + ".jpg");
