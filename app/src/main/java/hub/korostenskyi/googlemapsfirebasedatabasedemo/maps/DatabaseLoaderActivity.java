@@ -1,7 +1,11 @@
 package hub.korostenskyi.googlemapsfirebasedatabasedemo.maps;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,30 +22,37 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Objects;
 
 import hub.korostenskyi.googlemapsfirebasedatabasedemo.R;
 
 public class DatabaseLoaderActivity extends AppCompatActivity {
-
     private final int PICK_IMAGE = 1;
 
     private MarkerOptions marker;
 
     //Database and Storage
-    private DatabaseReference markerRef = FirebaseDatabase.getInstance().getReference().child("marker/");
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference userRef = ref.child("usr");
+    private DatabaseReference markerRef = userRef.push().child("marker");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("img/");
 
     private Uri selectedImage = null;
 
     //UI
     private EditText name_editText, photoName_editText, desc_editText, date_editText;
-    private Button send_btn, cancel_btn, pickImg_btn;
-    private ImageView imageView;
+    private Button send_btn, cancel_btn, pickImg_btn, button;
+    private ImageView imageView, imageView1;
+
+    //Data
+    private String name, photoName, desc, date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +78,10 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = name_editText.getText().toString();
-                String photoName = photoName_editText.getText().toString();
-                String desc = desc_editText.getText().toString();
-                String date = date_editText.getText().toString();
+                name = name_editText.getText().toString();
+                photoName = photoName_editText.getText().toString();
+                desc = desc_editText.getText().toString();
+                date = date_editText.getText().toString();
 
                 if (name.equals("") || photoName.equals("") || desc.equals("") || date.equals("")){
                     Toast.makeText(DatabaseLoaderActivity.this, "All fields are required", Toast.LENGTH_LONG).show();
@@ -92,22 +103,24 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                     });
 
                     //FIX IT!!!!
-                    String url = storageReference.child("img/"+photoName.toLowerCase()+".jpg").getDownloadUrl().toString();
+                    //String url = storageReference.child("img/"+photoName.toLowerCase()+".jpg").getDownloadUrl().toString();
+
+                    //TODO: Add this bool later
                     boolean isChecked = false;
 
-                    markerRef.child("author").setValue(name);
-                    markerRef.child("photoName").setValue(photoName);
-                    markerRef.child("description").setValue(desc);
-                    markerRef.child("isChecked").setValue(isChecked);
-                    markerRef.child("date").setValue(date);
-                    markerRef.child("location/latti").setValue(marker.getPosition().latitude);
-                    markerRef.child("location/longi").setValue(marker.getPosition().longitude);
-                    markerRef.child("image/id").setValue(selectedImage.hashCode());
-                    markerRef.child("image/url").setValue(url);
+                    HashMap<String, String> imgInfo = new HashMap<>();
+                    imgInfo.put("author", name);
+                    imgInfo.put("photoName", photoName);
+                    imgInfo.put("description", desc);
+                    imgInfo.put("date", date);
+                    imgInfo.put("location_lat", String.valueOf(marker.getPosition().latitude));
+                    imgInfo.put("location_lon", String.valueOf(marker.getPosition().longitude));
 
-                    Intent intent = new Intent(DatabaseLoaderActivity.this, MapsActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    userRef.push().setValue(imgInfo);
+
+//                    Intent intent = new Intent(DatabaseLoaderActivity.this, MapsActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(intent);
                 }
             }
         });
@@ -120,8 +133,34 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    final File tmpFile = File.createTempFile("img", "png");
+                    storageReference.child("img/");
+
+                    //  "id" is name of the image file....
+
+                    storageReference.child(photoName.toLowerCase() + ".jpg").getFile(tmpFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                            Bitmap image = BitmapFactory.decodeFile(tmpFile.getAbsolutePath());
+
+                            imageView1.setImageBitmap(image);
+
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
+    //Selecting an image
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && null != data) {
@@ -151,9 +190,12 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
         date_editText = findViewById(R.id.date_editText);
 
         imageView = findViewById(R.id.image_view);
+        imageView1 = findViewById(R.id.image_view1);
 
         pickImg_btn = findViewById(R.id.pickImg_btn);
         send_btn = findViewById(R.id.send_btn);
         cancel_btn = findViewById(R.id.cancel_btn);
+
+        button = findViewById(R.id.button2);
     }
 }
