@@ -100,7 +100,7 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                     });
 
                     //TODO: Add this bool later
-                    boolean isChecked = false;
+                    //boolean isChecked = false;
 
                     HashMap<String, String> imgInfo = new HashMap<>();
                     imgInfo.put("author", name);
