@@ -1,7 +1,5 @@
 package hub.korostenskyi.googlemapsfirebasedatabasedemo.maps;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -41,7 +39,6 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
     //Database and Storage
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference userRef = ref.child("usr");
-    private DatabaseReference markerRef = userRef.push().child("marker");
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("img/");
 
     private Uri selectedImage = null;
@@ -102,9 +99,6 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                         }
                     });
 
-                    //FIX IT!!!!
-                    //String url = storageReference.child("img/"+photoName.toLowerCase()+".jpg").getDownloadUrl().toString();
-
                     //TODO: Add this bool later
                     boolean isChecked = false;
 
@@ -118,9 +112,9 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
 
                     userRef.push().setValue(imgInfo);
 
-//                    Intent intent = new Intent(DatabaseLoaderActivity.this, MapsActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(intent);
+                    Intent intent = new Intent(DatabaseLoaderActivity.this, MapsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
             }
         });
@@ -140,17 +134,11 @@ public class DatabaseLoaderActivity extends AppCompatActivity {
                 try {
                     final File tmpFile = File.createTempFile("img", "png");
                     storageReference.child("img/");
-
-                    //  "id" is name of the image file....
-
                     storageReference.child(photoName.toLowerCase() + ".jpg").getFile(tmpFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
                             Bitmap image = BitmapFactory.decodeFile(tmpFile.getAbsolutePath());
-
                             imageView1.setImageBitmap(image);
-
                         }
                     });
                 } catch (Exception e) {
